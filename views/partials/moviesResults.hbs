@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Movies Results</title>
+    <style>
+        /* Your existing styles here */
+    </style>
+</head>
+
+<body>
+    <h1>Movies Results</h1>
+
+    <!-- Form to search by title -->
+    <form action="/api/movies" method="GET">
+    <label for="page">Page:</label>
+        <input type="number" id="page" name="page" value="1">
+
+        <label for="perPage">Movies per Page:</label>
+        <input type="number" id="perPage" name="perPage" value="10">
+        <label for="title">Search by Title:</label>
+        <input type="text" id="title" name="title">
+        <input type="submit" value="Search">
+    </form>
+
+    <hr>
+
+    <!-- Display search results only when there are valid search results -->
+    {{#if movies}}
+        <h2>Movies Results</h2>
+
+        {{#if movies.length}}
+            <table>
+                <thead>
+                    <tr>
+                        {{!-- <th>Title</th> --}}
+                        <th>Genre</th>
+                        <th>Release Year</th>
+                        <!-- Add more columns as needed based on your Movie model -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each movies}}
+                        <tr>
+                            {{!-- <td>{{this.title}}</td> --}}
+                            <td>{{this.genre}}</td>
+                            <td>{{releaseYear}}</td>
+                            <!-- Add more columns as needed based on your Movie model -->
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        {{else}}
+            <p>No results found.</p>
+        {{/if}}
+    {{/if}}
+</body>
+
+</html>

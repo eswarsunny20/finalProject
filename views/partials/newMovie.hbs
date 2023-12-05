@@ -1,0 +1,171 @@
+<!-- views/newmovie.hbs -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>New Movie Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #d7ef8e;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: rgb(246, 172, 172);
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid rgb(151, 172, 241);
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"] {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 15px auto 0;
+            display: block;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Add New Movie</h1>
+    <form action="/api/movies/new" method="POST">
+
+        <label for="plot">Plot:</label>
+        <textarea id="plot" name="plot" rows="4"></textarea>
+
+        <label for="rated">Rated:</label>
+        <input type="text" id="rated" name="rated">
+
+        <label for="awardsWins">Awards Wins:</label>
+        <input type="number" id="awardsWins" name="awards.wins">
+
+        <label for="awardsNominations">Awards Nominations:</label>
+        <input type="number" id="awardsNominations" name="awards.nominations">
+
+        <label for="awardsText">Awards Text:</label>
+        <input type="text" id="awardsText" name="awards.text">
+
+        <label for="imdbRating">IMDb Rating:</label>
+        <input type="number" id="imdbRating" name="imdb.rating">
+
+        <label for="imdbVotes">IMDb Votes:</label>
+        <input type="number" id="imdbVotes" name="imdb.votes">
+
+        <label for="countries">Countries:</label>
+        <input type="text" id="countries" name="countries[0]">
+
+        <label for="genres">Genres:</label>
+        <input type="text" id="genres" name="genres[0]">
+        <input type="text" id="genres" name="genres[1]">
+
+        <label for="runtime">Runtime:</label>
+        <input type="number" id="runtime" name="runtime">
+
+        <label for="cast">Cast:</label>
+        <input type="text" id="cast" name="cast[0]">
+        <input type="text" id="cast" name="cast[1]">
+        <input type="text" id="cast" name="cast[2]">
+        <input type="text" id="cast" name="cast[3]">
+
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title">
+
+        <label for="year">Year:</label>
+        <input type="number" id="year" name="year">
+
+        <label for="num_mflix_comments">Number of Comments:</label>
+        <input type="number" id="num_mflix_comments" name="num_mflix_comments">
+
+        <label for="fullplot">Full Plot:</label>
+        <textarea id="fullplot" name="fullplot" rows="4"></textarea>
+
+        <label for="released">Released Date:</label>
+        <input type="date" id="released" name="released">
+
+        <label for="directors">Directors:</label>
+        <input type="text" id="directors" name="directors[0]">
+
+        <label for="type">Type:</label>
+        <input type="text" id="type" name="type">
+
+        <label for="poster">Poster URL:</label>
+        <input type="text" id="poster" name="poster">
+
+        <label for="languages">Languages:</label>
+        <input type="text" id="languages" name="languages[0]">
+
+        <label for="lastupdated">Last Updated:</label>
+        <input type="date" id="lastupdated" name="lastupdated">
+
+        <label for="tomatoesViewerRating">Tomatoes Viewer Rating:</label>
+        <input type="number" id="tomatoesViewerRating" name="tomatoes.viewer.rating">
+
+        <label for="tomatoesNumReviews">Tomatoes Number of Reviews:</label>
+        <input type="number" id="tomatoesNumReviews" name="tomatoes.viewer.numReviews">
+
+        <label for="tomatoesMeter">Tomatoes Meter:</label>
+        <input type="number" id="tomatoesMeter" name="tomatoes.viewer.meter">
+
+        <label for="tomatoesFresh">Tomatoes Fresh:</label>
+        <input type="number" id="tomatoesFresh" name="tomatoes.fresh">
+
+        <label for="tomatoesCriticRating">Tomatoes Critic Rating:</label>
+        <input type="number" id="tomatoesCriticRating" name="tomatoes.critic.rating">
+
+        <label for="tomatoesCriticNumReviews">Tomatoes Critic Number of Reviews:</label>
+        <input type="number" id="tomatoesCriticNumReviews" name="tomatoes.critic.numReviews">
+
+        <label for="tomatoesCriticMeter">Tomatoes Critic Meter:</label>
+        <input type="number" id="tomatoesCriticMeter" name="tomatoes.critic.meter">
+
+        <label for="tomatoesRotten">Tomatoes Rotten:</label>
+        <input type="number" id="tomatoesRotten" name="tomatoes.rotten">
+
+        <label for="tomatoesLastUpdated">Tomatoes Last Updated:</label>
+        <input type="date" id="tomatoesLastUpdated" name="tomatoes.lastUpdated">
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+
+
+</html>
