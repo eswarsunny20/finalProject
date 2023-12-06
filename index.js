@@ -67,6 +67,22 @@ initialize(database.url)
       }
     });
 
+    app.get("/api/movies/:id", async (req, res) => {
+      try {
+        const movieId = req.params.id;
+        const movie = await db.getMovieById(movieId);
+    
+        if (!movie) {
+          return res.status(404).send("Movie not found");
+        }
+        console.log(movie);
+        res.render("partials/movieDetails", movie); 
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("Error retrieving movie");
+      }
+    });
+    
     app.delete("/api/movies/:id", async (req, res) => {
       try {
         const id = req.params.id;
