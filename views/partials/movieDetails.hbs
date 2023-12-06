@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Movie Details - {{title}}</title>
+    <style>
+
+        .page{
+            display: flex;
+        }
+
+        img {
+            max-width: 300px;
+            height: auto;
+            margin-left: 20px;
+        }
+
+        .content {
+            margin-left: 200px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>{{title}}</h1>
+
+    <div class="page">
+        <img src="{{poster}}" alt="Movie Poster">
+        <div class="content">
+            <p><strong>Plot:</strong> {{plot}}</p>
+            <p><strong>Genres:</strong> {{jsonPrettyPrint genres}}</p>
+            <p><strong>Runtime:</strong> {{runtime}} minutes</p>
+            <p><strong>Released:</strong> {{released}}</p>
+            <p><strong>Rated:</strong> {{rated}}</p>
+            <p><strong>Languages:</strong> {{jsonPrettyPrint languages}}</p>
+            <p><strong>Directors:</strong> {{jsonPrettyPrint directors}}</p>
+            <p><strong>IMDB Rating:</strong> {{imdb.rating}}/10 ({{imdb.votes}} votes)</p>
+            <p><strong>Rotten Tomatoes Viewer Rating:</strong> {{tomatoes.viewer.rating}}/100 ({{tomatoes.viewer.numReviews}} reviews)</p>
+            <p><strong>Rotten Tomatoes Critic Rating:</strong> {{tomatoes.critic.rating}}/10 ({{tomatoes.critic.numReviews}} reviews)</p>
+            <p><strong>Awards Wins:</strong> {{awards.wins}}</p>
+            <p><strong>Full Plot:</strong> {{fullplot}}</p>
+            
+        </div>
+    </div>
+</body>
+
+</html>
