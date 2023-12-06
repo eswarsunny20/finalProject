@@ -33,7 +33,7 @@ const db = require("./models/movies");
 initialize(database.url)
   .then(() => {
     app.get("/", (req, res) => {
-      res.render("partials/index", { title: "Your Express Server" });
+      res.render("partials/home");
     });
 
     app.post("/api/movies/new", async (req, res) => {
