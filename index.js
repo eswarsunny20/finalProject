@@ -1,16 +1,33 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+require('dotenv').config();
+const fs = require('fs');
 const path = require("path");
+const https = require('https');
 const hbs = require("express-handlebars");
 const { initialize } = require("./models/movies");
 var database = require("./config/database");
 const handlebars = require('handlebars')
 // Import function exported by newly installed node modules.
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
+const { verifyToken } = require('./middleware/authMiddleware');
 
+const { generateApiKey } = require('./models/apiKeys');
+const apiKey = generateApiKey();
+console.log(apiKey);
 
 const app = express();
 const port = process.env.PORT || 8000;
+
+
+const privateKeyPath = path.join(__dirname, 'server.key');
+const certificatePath = path.join(__dirname, 'server.crt');
+const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
+const certificate = fs.readFileSync(certificatePath, 'utf8');
+const credentials = { key: privateKey, cert: certificate };
+
+// Create an HTTPS server
+const httpsServer = https.createServer(credentials, app);
 
 app.use(express.static(path.join(__dirname, "public"))); // to access static files
 app.set("views", path.join(__dirname, "views"));
@@ -44,7 +61,7 @@ initialize(database.url)
       res.render("partials/home");
     });
 
-    app.post("/api/movies/new", async (req, res) => {
+    app.post("/api/movies/new", verifyToken ,async (req, res) => {
       try {
         const newMovie = req.body;
         delete newMovie._id;
@@ -104,7 +121,7 @@ initialize(database.url)
   });
   
 
-    app.delete("/api/movies/:id", async (req, res) => {
+    app.delete("/api/movies/:id", verifyToken, async (req, res) => {
       try {
         const id = req.params.id;
         const deletedMovie = await db.deleteMovieById(id);
@@ -119,10 +136,12 @@ initialize(database.url)
       }
     });
 
-    app.put("/api/movies/:id", async (req, res) => {
+    app.put("/api/movies/:id",verifyToken, async (req, res) => {
       try {
         const id = req.params.id;
         const data = req.body;
+        console.log('Received Update Request:', req.params.id, req.body);
+
         const updatedMovie = await db.updateMovieById(data, id);
         if (updatedMovie) {
           res.status(200).render("partials/success", { message: "Movie Updated Successfully" ,newMovie : updatedMovie });
@@ -135,7 +154,7 @@ initialize(database.url)
       }
     });
 
-    app.listen(port, () => {
+    httpsServer.listen(port, () => {
       console.log(`App listening on portsss: ${port}`);
     });
   })
