@@ -1,4 +1,3 @@
- 
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,8 +8,13 @@
             font-family: Arial, sans-serif;
         }
 
-        h1, h2 {
+        h1 {
             text-align: center;
+        }
+
+        h3 {
+            text-align: center;
+            color: #4CAF50;
         }
 
         form {
@@ -31,9 +35,16 @@
             overflow: hidden;
         }
 
-        .card img {
+        .card-img-container {
             width: 100%;
             height: 200px;
+            background: linear-gradient(to right, #4CAF50 50%, #ddd 50%);
+            overflow: hidden;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
         }
 
@@ -46,28 +57,30 @@
         }
     </style>
     <script>
-    console.log("Movies Data:", {{movies}});
-</script>
+        console.log("Movies Data:", {{ movies }});
+    </script>
 </head>
 
 <body>
-    <h1>Movies Results</h1> 
- {{#if movies}}
-
+    <h1>Movies Results</h1>
+    {{#if movies}}
         {{#if movies.length}}
             <div class="card-container">
                 {{#each movies}}
                     <div class="card">
-                       <img src="{{this.poster}}" onerror="this.src='/humber-logo.jpg';" alt="{{this.title}} Image">
+                        <div class="card-img-container">
+                            <img src="{{this.poster}}" onerror="this.src='/humber-logo.jpg';" alt="{{this.title}} Image">
+                        </div>
+                        <hr>
                         <div class="card-content">
                             <h3>{{this.title}}</h3>
-                            <p><strong>Genre:</strong> {{this.runtime}}</p>
-                            <p><strong>Release Year:</strong> {{this.releaseYear}}</p>
-
-
-
-
-
+                            <hr>
+                            <p><strong>Genre:</strong> {{#each this.genres}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
+                            <p><strong>Plot:</strong> {{this.plot}}</p>
+                            <p><strong>Release Year:</strong> {{this.year}}</p>
+                            <p><strong>Runtime:</strong> {{this.runtime}} minutes</p>
+                            <p><strong>Directors:</strong> {{#each this.directors}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
+                            <p><strong>Cast:</strong> {{#each this.cast}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
                             <!-- Add more card content as needed based on your Movie model -->
                         </div>
                     </div>
@@ -78,10 +91,7 @@
         {{/if}}
     {{/if}}
 
-        <hr>
-
-    <!-- Display search results only when there are valid search results -->
-   
+    <hr>
 </body>
 
 </html>
