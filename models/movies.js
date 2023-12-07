@@ -1,8 +1,7 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 // Define the Movie schema
 const movieSchema = new mongoose.Schema({
-
   plot: String,
   rated: String,
   awards: {
@@ -46,9 +45,7 @@ const movieSchema = new mongoose.Schema({
   },
 });
 
-const Movie = mongoose.model('Movie', movieSchema);
-
-
+const Movie = mongoose.model("Movie", movieSchema);
 
 const addNewMovie = async (data) => {
   try {
@@ -60,15 +57,19 @@ const addNewMovie = async (data) => {
   }
 };
 
-const getAllMovies = async (page, perPage, title) => {
+const getAllMovies = async (req,page, perPage, title) => {
   try {
-    const query = title ? { title } : {};
-    const movies = await Movie.find(query)
+    let query = {};
+
+    if (title) {
+      console.log(req.query.title);
+      query = { title: { $regex: req.query.title, $options: "i" } }; // Case-insensitive search
+    }
+    const test = await Movie.find(query)
       .sort({ _id: 1 })
       .skip((page - 1) * perPage)
       .limit(perPage);
-      console.log('Retrieved movies:', movies); 
-    return movies;
+    return test;
   } catch (error) {
     throw error;
   }
@@ -102,11 +103,11 @@ const deleteMovieById = async (id) => {
 };
 
 const initialize = (connectionString) => {
-    return mongoose.connect(connectionString);
-  };
-
+  return mongoose.connect(connectionString);
+};
 
 module.exports = {
+  Movie,
   initialize,
   addNewMovie,
   getAllMovies,

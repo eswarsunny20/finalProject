@@ -4,6 +4,10 @@ const path = require("path");
 const hbs = require("express-handlebars");
 const { initialize } = require("./models/movies");
 var database = require("./config/database");
+const handlebars = require('handlebars')
+// Import function exported by newly installed node modules.
+const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
+
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -12,8 +16,12 @@ app.use(express.static(path.join(__dirname, "public"))); // to access static fil
 app.set("views", path.join(__dirname, "views"));
 app.use("/public", express.static("public"));
 
+const {Movie} = require('./models/movies')
+
 const exphbs = hbs.create({
   extname: ".hbs",
+  handlebars: allowInsecurePrototypeAccess(handlebars),
+
   helpers: {
     jsonPrettyPrint: function (jsonData) {
       //JSON data with formatting
@@ -52,15 +60,21 @@ initialize(database.url)
       res.render("partials/newMovie"); 
     });
 
+    app.get("/api/movies/search", (req, res) => {
+      res.render("partials/searchMovies"); 
+    });
+
     app.get("/api/movies", async (req, res) => {
       try {
         const { page, perPage, title } = req.query;
         const movies = await db.getAllMovies(
+          req, // Pass the req object here
           parseInt(page),
           parseInt(perPage),
           title
         );
-        res.render("partials/moviesResults", { movies });
+     
+        res.render("partials/allMovies", { movies : movies });
       } catch (error) {
         console.error(error);
         res.status(500).send("Error retrieving movies data");
@@ -69,7 +83,7 @@ initialize(database.url)
 
     app.get("/api/movies/:id", async (req, res) => {
       try {
-        const movieId = req.params.id;
+        const movieId = req.query.id;
         const movie = await db.getMovieById(movieId);
     
         if (!movie) {
@@ -82,7 +96,7 @@ initialize(database.url)
         res.status(500).send("Error retrieving movie");
       }
     });
-    
+
     app.delete("/api/movies/:id", async (req, res) => {
       try {
         const id = req.params.id;

@@ -1,0 +1,87 @@
+ 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Movies Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        form {
+            text-align: center;
+        }
+
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .card {
+            width: 300px;
+            margin: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 15px;
+        }
+
+        p {
+            margin: 0;
+        }
+    </style>
+    <script>
+    console.log("Movies Data:", {{movies}});
+</script>
+</head>
+
+<body>
+    <h1>Movies Results</h1> 
+ {{#if movies}}
+
+        {{#if movies.length}}
+            <div class="card-container">
+                {{#each movies}}
+                    <div class="card">
+                       <img src="{{this.poster}}" onerror="this.src='/humber-logo.jpg';" alt="{{this.title}} Image">
+                        <div class="card-content">
+                            <h3>{{this.title}}</h3>
+                            <p><strong>Genre:</strong> {{this.runtime}}</p>
+                            <p><strong>Release Year:</strong> {{this.releaseYear}}</p>
+
+
+
+
+
+                            <!-- Add more card content as needed based on your Movie model -->
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        {{else}}
+            <p>No results found.</p>
+        {{/if}}
+    {{/if}}
+
+        <hr>
+
+    <!-- Display search results only when there are valid search results -->
+   
+</body>
+
+</html>
