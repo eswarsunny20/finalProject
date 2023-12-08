@@ -218,7 +218,7 @@ initialize(database.url)
       }
     });
 
-    httpsServer.listen(port, () => {
+    app.listen(port, () => {
       console.log(`App listening on portsss: ${port}`);
     });
   })
