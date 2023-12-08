@@ -33,7 +33,7 @@ const authenticateToken = (req, res, next) => {
         if(err){
             return res.status(403).json({message : "Invalid Token"})
         }
-        console.log('Decoded Token:', decoded);
+        
         req.user = decoded
         next();
     }) 
