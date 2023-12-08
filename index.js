@@ -6,6 +6,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const fs = require("fs");
 
+const handlebars = require("handlebars");
 const path = require("path");
 const https = require("https");
 const http = require("http"); // Include the 'http' module
