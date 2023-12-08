@@ -1,3 +1,4 @@
+const jwt  = require('jsonwebtoken');
 const { generateApiKey } = require('../models/apiKeys');
 
 const apiKeys = new Set();
@@ -18,4 +19,20 @@ const verifyToken = (req, res, next) => {
   next();
 };
 
-module.exports = { verifyToken };
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split('')[1]    
+    if (!token) {
+      return res.status(403).json({ message: 'No token provided' });
+    }
+
+    jwt.verify(token, "1234",(err,decoded)=>{
+        if(err){
+            return res.status(403).json({message : "Invalid Token"})
+        }
+        req.user = decoded
+        next();
+    }) 
+  };
+
+module.exports = { verifyToken,authenticateToken };

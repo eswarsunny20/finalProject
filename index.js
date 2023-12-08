@@ -1,4 +1,5 @@
 require("dotenv").config();
+const jwt = require('jsonwebtoken');
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -14,7 +15,7 @@ const {
   allowInsecurePrototypeAccess,
 } = require("@handlebars/allow-prototype-access");
 
-const { verifyToken } = require("./middleware/authMiddleware");
+const { verifyToken, authenticateToken } = require("./middleware/authMiddleware");
 const database = require("./config/database");
 const { generateApiKey } = require("./models/apiKeys");
 const apiKey = generateApiKey();
@@ -57,11 +58,30 @@ app.use(bodyParser.json());
 app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 
 const db = require("./models/movies");
+const { createSecretKey } = require("crypto");
 
 initialize(database.url)
   .then(() => {
     app.get("/", (req, res) => {
       res.render("partials/home");
+    });
+
+    app.get("/api/login", (req, res) => {
+      res.render("partials/loginPage");
+    });
+
+    app.post("/api/login", (req, res) => {
+      const { username, password } = req.body;
+      if (username === "eswar" && password === "sunny") {
+        const token = jwt.sign({ username }, "1234", { expiresIn: "1h" });
+        res.json({ token });
+      } else {
+        req.status(401).json({ message: "Invalid Username or Password" });
+      }
+    });
+
+    app.get('/protected', authenticateToken, (req, res) => {
+      res.json({ message: 'You are authorized to access this protected resource.' });
     });
 
     app.post("/api/movies/new", verifyToken, async (req, res) => {
