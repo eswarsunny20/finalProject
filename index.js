@@ -1,30 +1,33 @@
+require("dotenv").config();
+
 const express = require("express");
 const bodyParser = require("body-parser");
-require('dotenv').config();
-const fs = require('fs');
-const path = require("path");
-const https = require('https');
-const hbs = require("express-handlebars");
-const { initialize } = require("./models/movies");
-var database = require("./config/database");
-const handlebars = require('handlebars')
-// Import function exported by newly installed node modules.
-const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
-const { verifyToken } = require('./middleware/authMiddleware');
+const fs = require("fs");
 
-const { generateApiKey } = require('./models/apiKeys');
+const path = require("path");
+const https = require("https");
+const hbs = require("express-handlebars");
+
+const { initialize } = require("./models/movies");
+const handlebars = require("handlebars");
+const {
+  allowInsecurePrototypeAccess,
+} = require("@handlebars/allow-prototype-access");
+
+const { verifyToken } = require("./middleware/authMiddleware");
+const database = require("./config/database");
+const { generateApiKey } = require("./models/apiKeys");
 const apiKey = generateApiKey();
-console.log(apiKey);
+
+const privateKeyPath = path.join(__dirname, "server.key");
+const certificatePath = path.join(__dirname, "server.crt");
+const privateKey = fs.readFileSync(privateKeyPath, "utf8");
+const certificate = fs.readFileSync(certificatePath, "utf8");
+const credentials = { key: privateKey, cert: certificate };
 
 const app = express();
 const port = process.env.PORT || 8000;
-
-
-const privateKeyPath = path.join(__dirname, 'server.key');
-const certificatePath = path.join(__dirname, 'server.crt');
-const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
-const certificate = fs.readFileSync(certificatePath, 'utf8');
-const credentials = { key: privateKey, cert: certificate };
+// console.log(apiKey)
 
 // Create an HTTPS server
 const httpsServer = https.createServer(credentials, app);
@@ -33,7 +36,7 @@ app.use(express.static(path.join(__dirname, "public"))); // to access static fil
 app.set("views", path.join(__dirname, "views"));
 app.use("/public", express.static("public"));
 
-const {Movie} = require('./models/movies')
+const { Movie } = require("./models/movies");
 
 const exphbs = hbs.create({
   extname: ".hbs",
@@ -61,7 +64,7 @@ initialize(database.url)
       res.render("partials/home");
     });
 
-    app.post("/api/movies/new", verifyToken ,async (req, res) => {
+    app.post("/api/movies/new", verifyToken, async (req, res) => {
       try {
         const newMovie = req.body;
         delete newMovie._id;
@@ -69,16 +72,21 @@ initialize(database.url)
         res.status(201).render("partials/success", { newMovie: result });
       } catch (error) {
         console.error(error);
-        res.status(500).render("partials/error", { message: "Error adding a new movie", error});
+        res
+          .status(500)
+          .render("partials/error", {
+            message: "Error adding a new movie",
+            error,
+          });
       }
     });
 
     app.get("/api/movies/new", (req, res) => {
-      res.render("partials/newMovie"); 
+      res.render("partials/newMovie");
     });
 
     app.get("/api/movies/search", (req, res) => {
-      res.render("partials/searchMovies"); 
+      res.render("partials/searchMovies");
     });
 
     app.get("/api/movies", async (req, res) => {
@@ -90,8 +98,8 @@ initialize(database.url)
           parseInt(perPage),
           title
         );
-     
-        res.render("partials/allMovies", { movies : movies });
+
+        res.render("partials/allMovies", { movies: movies });
       } catch (error) {
         console.error(error);
         res.status(500).send("Error retrieving movies data");
@@ -99,58 +107,68 @@ initialize(database.url)
     });
 
     app.get("/api/movies/searchMovie", (req, res) => {
-      res.render("partials/moviesResults"); 
+      res.render("partials/moviesResults");
     });
 
     app.get("/api/movies/details/:id", async (req, res) => {
       try {
-          const movieId = req.params.id;
-          const movie = await db.getMovieById(movieId);
-          console.log(movie)
-  
-          if (!movie) {
-              return res.status(404).send("Movie not found");
-          }
-  
-          console.log(movie);
-          res.render("partials/movieDetails", movie);
+        const movieId = req.params.id;
+        const movie = await db.getMovieById(movieId);
+        console.log(movie);
+
+        if (!movie) {
+          return res.status(404).send("Movie not found");
+        }
+
+        console.log(movie);
+        res.render("partials/movieDetails", movie);
       } catch (error) {
-          console.error(error);
-          res.status(500).send("Error retrieving movie");
+        console.error(error);
+        res.status(500).send("Error retrieving movie");
       }
-  });
-  
+    });
 
     app.delete("/api/movies/:id", verifyToken, async (req, res) => {
       try {
         const id = req.params.id;
         const deletedMovie = await db.deleteMovieById(id);
         if (deletedMovie) {
-          res.status(200).send("Movie deleted Successfully" );
+          res.status(200).send("Movie deleted Successfully");
         } else {
           res.status(404).send("Movie not found");
         }
       } catch (error) {
         console.error(error);
-        res.status(500).render("partials/error", { message: "Error deleting movie", error });
+        res
+          .status(500)
+          .render("partials/error", { message: "Error deleting movie", error });
       }
     });
 
-    app.put("/api/movies/:id",verifyToken, async (req, res) => {
+    app.put("/api/movies/:id", verifyToken, async (req, res) => {
       try {
         const id = req.params.id;
         const data = req.body;
-        console.log('Received Update Request:', req.params.id, req.body);
+        console.log("Received Update Request:", req.params.id, req.body);
 
         const updatedMovie = await db.updateMovieById(data, id);
         if (updatedMovie) {
-          res.status(200).render("partials/success", { message: "Movie Updated Successfully" ,newMovie : updatedMovie });
+          res
+            .status(200)
+            .render("partials/success", {
+              message: "Movie Updated Successfully",
+              newMovie: updatedMovie,
+            });
         } else {
-          res.status(404).render("partials/error", { message: "Movie not found" });
+          res
+            .status(404)
+            .render("partials/error", { message: "Movie not found" });
         }
       } catch (error) {
         console.error(error);
-        res.status(500).render("partials/error", { message: "Error updating movie", error });
+        res
+          .status(500)
+          .render("partials/error", { message: "Error updating movie", error });
       }
     });
 

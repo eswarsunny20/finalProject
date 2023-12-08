@@ -4,8 +4,8 @@ const apiKeys = new Set();
 
 const verifyToken = (req, res, next) => {
   const apiKey = req.headers['api-key'];
-  console.log('Received API Key:', apiKey);
-
+  apiKeys.add(apiKey)
+//   console.log('Received API Key:', apiKey);
   if (!apiKey) {
     return res.status(403).json({ error: 'API key is missing' });
   }
