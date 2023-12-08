@@ -49,7 +49,7 @@ const { Movie } = require("./models/movies");
 
 const exphbs = hbs.create({
   extname: ".hbs",
-  handlebars: allowInsecurePrototypeAccess(handlebars),
+  // handlebars: allowInsecurePrototypeAccess(handlebars),
 
   helpers: {
     jsonPrettyPrint: function (jsonData) {
