@@ -34,8 +34,8 @@ const credentials = { key: privateKey, cert: certificate };
 
 const app = express();
 const port = process.env.PORT || 8000;
-console.log('API-Key : - ',apiKey)
-// console.log('Secure Secret Key : - ',secureSecretKey)
+// console.log('API-Key : - ',apiKey)
+
 
 // Create an HTTPS server
 const httpsServer = https.createServer(credentials, app);
@@ -193,7 +193,7 @@ initialize(database.url)
       }
     });
 
-    app.put("/api/movies/:id", verifyToken, async (req, res) => {//// This route has both authentication and authorization because it's update operation
+    app.put("/api/movies/:id", verifyToken, async (req, res) => {// This route has both authentication and authorization because it's update operation
       try {
         const id = req.params.id;
         const data = req.body;
