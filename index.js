@@ -12,6 +12,7 @@ const https = require("https");
 const http = require("http"); // Include the 'http' module
 const hbs = require("express-handlebars");
 const { allowInsecurePrototypeAccess } = require("@handlebars/allow-prototype-access");
+const { initialize } = require("./models/movies");
 
 const { verifyToken, authenticateToken, secureSecretKey } = require("./middleware/authMiddleware");
 const database = require("./config/database");
