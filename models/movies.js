@@ -107,6 +107,7 @@ const initialize = (connectionString) => {
 };
 
 module.exports = {
+  Movie,
   initialize,
   addNewMovie,
   getAllMovies,

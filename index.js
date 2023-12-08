@@ -6,15 +6,22 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const fs = require("fs");
 
-const handlebars = require("handlebars");
 const path = require("path");
 const https = require("https");
-const http = require("http"); // Include the 'http' module
 const hbs = require("express-handlebars");
-const { allowInsecurePrototypeAccess } = require("@handlebars/allow-prototype-access");
-const initialize  = require("./models/movies");
 
-const { verifyToken, authenticateToken, secureSecretKey } = require("./middleware/authMiddleware");
+const { initialize } = require("./models/movies");
+const handlebars = require("handlebars");
+const {
+  allowInsecurePrototypeAccess,
+} = require("@handlebars/allow-prototype-access");
+
+const {
+  verifyToken,
+  authenticateToken,
+  secureSecretKey,
+} = require("./middleware/authMiddleware");
+
 const database = require("./config/database");
 const { generateApiKey } = require("./models/apiKeys");
 const apiKey = generateApiKey();
@@ -27,22 +34,13 @@ const credentials = { key: privateKey, cert: certificate };
 
 const app = express();
 const port = process.env.PORT || 8000;
+// console.log('API-Key : - ',apiKey)
 
-// Create an HTTP server for local development
-const httpServer = http.createServer(app);
-const httpPort = process.env.HTTP_PORT || 8001; // Choose a different port for HTTP
 
-httpServer.listen(httpPort, () => {
-  console.log(`App listening on HTTP port: ${httpPort}`);
-});
-
-// Create an HTTPS server for both local development and deployment on Cyclic
+// Create an HTTPS server
 const httpsServer = https.createServer(credentials, app);
-httpsServer.listen(port, () => {
-  console.log(`App listening on HTTPS port: ${port}`);
-});
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "public"))); // to access static files
 app.set("views", path.join(__dirname, "views"));
 app.use("/public", express.static("public"));
 
@@ -50,16 +48,16 @@ const { Movie } = require("./models/movies");
 
 const exphbs = hbs.create({
   extname: ".hbs",
-  // handlebars: allowInsecurePrototypeAccess(handlebars),
+  handlebars: allowInsecurePrototypeAccess(handlebars),
 
   helpers: {
     jsonPrettyPrint: function (jsonData) {
-      // JSON data with formatting
+      //JSON data with formatting
       return JSON.stringify(jsonData, null, 2);
     },
   },
 });
-app.engine("hbs", exphbs.engine); // register handlebar as template engine
+app.engine("hbs", exphbs.engine); // register handlebar as templet engine
 app.set("view engine", "hbs");
 
 app.use(bodyParser.urlencoded({ extended: "true" }));
@@ -80,7 +78,7 @@ app.use(
 initialize(database.url)
   .then(() => {
     app.get("/", authenticateToken, (req, res) => {
-      // added auth because this is the first page after login
+      // added auth becz this is first page after login
       res.render("partials/home");
     });
 
@@ -90,14 +88,14 @@ initialize(database.url)
     });
 
     app.post("/api/login", (req, res) => {
-      // no auth and no key as it's the login
+      //  no auth and no key as it's the login
       const { username, password } = req.body;
       if (username === "eswar" && password === "sunny") {
         const token = jwt.sign({ username }, secureSecretKey, {
           expiresIn: "1h",
         });
         req.session.token = token;
-        console.log('token', req.session)
+        console.log('token',req.session)
         // res.json(token)
         res.redirect("/"); // Redirect to the home page
       } else {
@@ -117,7 +115,7 @@ initialize(database.url)
     });
 
     app.post("/api/movies/new", authenticateToken, async (req, res) => {
-      // added auth because it can be done through UI
+      // added auth becz it can be done through UI
       try {
         const newMovie = req.body;
         delete newMovie._id;
@@ -132,11 +130,11 @@ initialize(database.url)
       }
     });
 
-    app.get("/api/movies/search", authenticateToken, (req, res) => { // all movies hbs from the home page
+    app.get("/api/movies/search", authenticateToken, (req, res) => { // all movies hbs from home page
       res.render("partials/searchMovies");
     });
 
-    app.get("/api/movies", authenticateToken, async (req, res) => { // after getting inputs from the user this will be triggered
+    app.get("/api/movies", authenticateToken, async (req, res) => { //after betting inputs from user this will be triggered
       try {
         const { page, perPage, title } = req.query;
         const movies = await db.getAllMovies(
@@ -157,7 +155,7 @@ initialize(database.url)
       res.render("partials/moviesResults");
     });
 
-    app.get("/api/movies/details", authenticateToken, async (req, res) => { // showing results for a single search movie
+    app.get("/api/movies/details", authenticateToken, async (req, res) => { //showing results for single search movie
       try {
         const movieId = req.query.id;
 
@@ -178,7 +176,7 @@ initialize(database.url)
       }
     });
 
-    app.delete("/api/movies/:id", verifyToken, async (req, res) => {// This route has both authentication and authorization because it's a delete operation
+    app.delete("/api/movies/:id", verifyToken, async (req, res) => {// This route has both authentication and authorization because it's delete operation
       try {
         const id = req.params.id;
         const deletedMovie = await db.deleteMovieById(id);
@@ -195,7 +193,7 @@ initialize(database.url)
       }
     });
 
-    app.put("/api/movies/:id", verifyToken, async (req, res) => {// This route has both authentication and authorization because it's an update operation
+    app.put("/api/movies/:id", verifyToken, async (req, res) => {// This route has both authentication and authorization because it's update operation
       try {
         const id = req.params.id;
         const data = req.body;
