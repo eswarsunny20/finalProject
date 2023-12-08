@@ -1,5 +1,6 @@
 require("dotenv").config();
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
+const session = require("express-session");
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -15,7 +16,12 @@ const {
   allowInsecurePrototypeAccess,
 } = require("@handlebars/allow-prototype-access");
 
-const { verifyToken, authenticateToken } = require("./middleware/authMiddleware");
+const {
+  verifyToken,
+  authenticateToken,
+  secureSecretKey,
+} = require("./middleware/authMiddleware");
+
 const database = require("./config/database");
 const { generateApiKey } = require("./models/apiKeys");
 const apiKey = generateApiKey();
@@ -28,7 +34,8 @@ const credentials = { key: privateKey, cert: certificate };
 
 const app = express();
 const port = process.env.PORT || 8000;
-// console.log(apiKey)
+console.log('API-Key : - ',apiKey)
+// console.log('Secure Secret Key : - ',secureSecretKey)
 
 // Create an HTTPS server
 const httpsServer = https.createServer(credentials, app);
@@ -60,31 +67,55 @@ app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 const db = require("./models/movies");
 const { createSecretKey } = require("crypto");
 
+app.use(
+  session({
+    secret: secureSecretKey,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
 initialize(database.url)
   .then(() => {
-    app.get("/", (req, res) => {
+    app.get("/", authenticateToken, (req, res) => {
+      // added auth becz this is first page after login
       res.render("partials/home");
     });
 
     app.get("/api/login", (req, res) => {
+      // rendering login screen
       res.render("partials/loginPage");
     });
 
     app.post("/api/login", (req, res) => {
+      //  no auth and no key as it's the login
       const { username, password } = req.body;
       if (username === "eswar" && password === "sunny") {
-        const token = jwt.sign({ username }, "1234", { expiresIn: "1h" });
-        res.json({ token });
+        const token = jwt.sign({ username }, secureSecretKey, {
+          expiresIn: "1h",
+        });
+        req.session.token = token;
+        console.log('token',req.session)
+        // res.json(token)
+        res.redirect("/"); // Redirect to the home page
       } else {
         req.status(401).json({ message: "Invalid Username or Password" });
       }
     });
 
-    app.get('/protected', authenticateToken, (req, res) => {
-      res.json({ message: 'You are authorized to access this protected resource.' });
+    app.get("/protected", authenticateToken, (req, res) => {
+      // testing route for auth
+      res.json({
+        message: "You are authorized to access this protected resource.",
+      });
     });
 
-    app.post("/api/movies/new", verifyToken, async (req, res) => {
+    app.get("/api/movies/new", authenticateToken, (req, res) => {
+      res.render("partials/newMovie");
+    });
+
+    app.post("/api/movies/new", authenticateToken, async (req, res) => {
+      // added auth becz it can be done through UI
       try {
         const newMovie = req.body;
         delete newMovie._id;
@@ -92,24 +123,18 @@ initialize(database.url)
         res.status(201).render("partials/success", { newMovie: result });
       } catch (error) {
         console.error(error);
-        res
-          .status(500)
-          .render("partials/error", {
-            message: "Error adding a new movie",
-            error,
-          });
+        res.status(500).render("partials/error", {
+          message: "Error adding a new movie",
+          error,
+        });
       }
     });
 
-    app.get("/api/movies/new", (req, res) => {
-      res.render("partials/newMovie");
-    });
-
-    app.get("/api/movies/search", (req, res) => {
+    app.get("/api/movies/search", authenticateToken, (req, res) => { // all movies hbs from home page
       res.render("partials/searchMovies");
     });
 
-    app.get("/api/movies", async (req, res) => {
+    app.get("/api/movies", authenticateToken, async (req, res) => { //after betting inputs from user this will be triggered
       try {
         const { page, perPage, title } = req.query;
         const movies = await db.getAllMovies(
@@ -126,21 +151,24 @@ initialize(database.url)
       }
     });
 
-    app.get("/api/movies/searchMovie", (req, res) => {
+    app.get("/api/movies/searchMovie", authenticateToken, (req, res) => {// search single movie
       res.render("partials/moviesResults");
     });
 
-    app.get("/api/movies/details/:id", async (req, res) => {
+    app.get("/api/movies/details", authenticateToken, async (req, res) => { //showing results for single search movie
       try {
-        const movieId = req.params.id;
+        const movieId = req.query.id;
+
+        if (!movieId) {
+          return res.status(400).send("Movie ID is missing");
+        }
+
         const movie = await db.getMovieById(movieId);
-        console.log(movie);
 
         if (!movie) {
           return res.status(404).send("Movie not found");
         }
 
-        console.log(movie);
         res.render("partials/movieDetails", movie);
       } catch (error) {
         console.error(error);
@@ -148,7 +176,7 @@ initialize(database.url)
       }
     });
 
-    app.delete("/api/movies/:id", verifyToken, async (req, res) => {
+    app.delete("/api/movies/:id", verifyToken, async (req, res) => {// This route has both authentication and authorization because it's delete operation
       try {
         const id = req.params.id;
         const deletedMovie = await db.deleteMovieById(id);
@@ -165,7 +193,7 @@ initialize(database.url)
       }
     });
 
-    app.put("/api/movies/:id", verifyToken, async (req, res) => {
+    app.put("/api/movies/:id", verifyToken, async (req, res) => {//// This route has both authentication and authorization because it's update operation
       try {
         const id = req.params.id;
         const data = req.body;
@@ -173,12 +201,10 @@ initialize(database.url)
 
         const updatedMovie = await db.updateMovieById(data, id);
         if (updatedMovie) {
-          res
-            .status(200)
-            .render("partials/success", {
-              message: "Movie Updated Successfully",
-              newMovie: updatedMovie,
-            });
+          res.status(200).render("partials/success", {
+            message: "Movie Updated Successfully",
+            newMovie: updatedMovie,
+          });
         } else {
           res
             .status(404)

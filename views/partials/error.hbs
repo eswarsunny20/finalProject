@@ -4,12 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Error</title>
+    <style>
+        .sam {
+            color: red;
+            font-size: 24px; /* You can adjust the font size as needed */
+        }
+
+        .body-message {
+            color: red;
+            font-size: 18px; /* You can adjust the font size as needed */
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Error</h1>
-    <p>{{ message }}</p>
-    <a href="/api/movies/new">Try Again</a>
+    <h1 class="sam">Error</h1>
+    <p class="body-message">{{ message }}</p>
+    <a href="/api/login">Login</a>
 </body>
 
 </html>
