@@ -56,6 +56,9 @@ const exphbs = hbs.create({
       //JSON data with formatting
       return JSON.stringify(jsonData, null, 2);
     },
+    add: function (value, addition) {
+      return value + addition;
+    },
   },
 });
 app.engine("hbs", exphbs.engine); // register handlebar as templet engine
@@ -86,6 +89,7 @@ initialize(database.url)
     app.post("/api/login", (req, res) => {
       //  no auth and no key as it's the login
       const { username, password } = req.body;
+      console.log(password);
       if (username === "eswar" && password === "sunny") {
         const token = jwt.sign({ username }, secureSecretKey, {
           expiresIn: "1h",
@@ -212,6 +216,37 @@ initialize(database.url)
           .render("partials/error", { message: "Error updating movie", error });
       }
     });
+
+    app.get("/api/movies/selectYear", authenticateToken, (req, res) => {
+      res.render("partials/selectYear");
+    });
+
+app.get("/api/movies/byYear", authenticateToken, async (req, res) => {
+  try {
+    const { year } = req.query;
+
+    if (!year) {
+      return res.status(400).render("partials/error", { message: "Year is missing" });
+    }
+
+    const movies = await Movie.find({ year: parseInt(year) })
+      .sort({ "imdb.rating": -1 }) // Order by ratings descending
+      .exec();
+
+    if (movies.length === 0) {
+      return res.status(404).render("partials/error", { message: "No movies found for the given year" });
+    }
+
+    res.render("partials/specialFeature", { movies: movies, selectedYear: year });
+  } catch (error) {
+    console.error(error);
+    res.status(500).render("partials/error", { message: "Error retrieving movies by year", error });
+  }
+});
+
+
+
+
 
     app.listen(port, () => {
       console.log(`App listening on portsss: ${port}`);

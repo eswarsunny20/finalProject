@@ -1,0 +1,54 @@
+<!-- views/partials/moviesByYear.hbs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies by Year</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        img {
+            max-width: 100px;
+            max-height: 150px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Movies for {{ selectedYear }}</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Image</th>
+                <th>Title</th>
+                <th>Ratings</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each movies}}
+                <tr>
+                    <td>{{ add @index 1}}</td>
+                    <td><img src="{{ this.poster }}" alt="{{ this.title }}"></td>
+                    <td>{{ this.title }}</td>
+                    <td>{{ this.imdb.rating }}</td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</body>
+</html>
