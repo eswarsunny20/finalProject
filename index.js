@@ -35,7 +35,7 @@ const app = express();
 const port = process.env.PORT || 8000;
 const key = generateKey();
 // only when performing put and delete
-console.log('API-Key : - ',key)
+// console.log('API-Key : - ',key)
 
 
 // Create an HTTPS server
@@ -66,7 +66,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 
 const db = require("./models/movies");
-const { createSecretKey } = require("crypto");
 
 app.use(
   session({
@@ -78,12 +77,8 @@ app.use(
 
 initialize(database.url)
   .then(() => {
-    app.get("/", authenticateToken, (req, res) => {
-      // added auth becz this is first page after login
-      res.render("partials/home");
-    });
 
-    app.get("/api/login", (req, res) => {
+    app.get("/", (req, res) => {
       // rendering login screen
       res.render("partials/loginPage");
     });
@@ -96,12 +91,11 @@ initialize(database.url)
           expiresIn: "1h",
         });
         req.session.token = token;
-        // console.log('token',req.session)
-        // res.json(token)
-        res.redirect("/"); // Redirect to the home page
+        res.render("partials/home"); // Redirect to the home page
       } else {
-        req.status(401).json({ message: "Invalid Username or Password" });
+        res.status(401).render("partials/error",{ message: "Invalid Username or Password" });
       }
+
     });
 
     app.get("/protected", authenticateToken, (req, res) => {
