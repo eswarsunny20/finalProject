@@ -5,15 +5,20 @@ const secureSecretKey = crypto.randomBytes(32).toString('hex');
 
 const apiKeys = new Set();
 
+const generateKey = (req, res) => {
+  const apiKey = generateApiKey();
+  apiKeys.add(apiKey);
+  return apiKey;
+}
+
 const verifyToken = (req, res, next) => {
-  const apiKey = req.headers['api-key'];
-  apiKeys.add(apiKey)
-//   console.log('Received API Key:', apiKey);
-  if (!apiKey) {
+  const headerapiKey = req.headers['api-key'];
+  // apiKeys.add(apiKey)
+  if (!headerapiKey) {
     return res.status(403).json({ error: 'API key is missing' });
   }
 
-  if (!apiKeys.has(apiKey)) {
+  if (!apiKeys.has(headerapiKey)) {
     console.error('Invalid API Key:', apiKey);
     return res.status(403).json({ error: 'Invalid API key' });
   }
@@ -33,10 +38,10 @@ const authenticateToken = (req, res, next) => {
         if(err){
             return res.status(403).json({message : "Invalid Token"})
         }
-        
+        // console.log('Decoded Token:', decoded);
         req.user = decoded
         next();
     }) 
   };
 
-module.exports = { verifyToken,authenticateToken,secureSecretKey };
+module.exports = { verifyToken,authenticateToken,secureSecretKey ,generateKey};

@@ -20,11 +20,10 @@ const {
   verifyToken,
   authenticateToken,
   secureSecretKey,
+  generateKey,
 } = require("./middleware/authMiddleware");
 
 const database = require("./config/database");
-const { generateApiKey } = require("./models/apiKeys");
-const apiKey = generateApiKey();
 
 const privateKeyPath = path.join(__dirname, "server.key");
 const certificatePath = path.join(__dirname, "server.crt");
@@ -34,7 +33,9 @@ const credentials = { key: privateKey, cert: certificate };
 
 const app = express();
 const port = process.env.PORT || 8000;
-// console.log('API-Key : - ',apiKey)
+const key = generateKey();
+// only when performing put and delete
+console.log('API-Key : - ',key)
 
 
 // Create an HTTPS server
@@ -95,7 +96,7 @@ initialize(database.url)
           expiresIn: "1h",
         });
         req.session.token = token;
-        console.log('token',req.session)
+        // console.log('token',req.session)
         // res.json(token)
         res.redirect("/"); // Redirect to the home page
       } else {
