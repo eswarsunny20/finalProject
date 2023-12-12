@@ -4,12 +4,63 @@
 <head>
   <title>{{title}}</title>
   <link rel='stylesheet' href='../../public/stylesheets/style.css' />
+  <style>
+    /* Add hover effect styles */
+    header:hover img {
+      transform: scale(1.1); /* Enlarge the image on hover */
+    }
+
+    header:hover h1 {
+      color: rgba(191, 0, 255, 0.915); /* Change text color on hover */
+    }
+
+    /* Additional CSS for the header */
+    header {
+      background-color: #f2f2f2;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    header img {
+      width: 50px;
+      margin-right: 10px;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    header h1 {
+      margin: 0;
+      color: black;
+      transition: color 0.3s ease-in-out;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    footer img {
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+
+    footer p {
+      margin: 0;
+      display: flex;
+      align-items: center;
+    }
+  </style>
 </head>
 
 <body>
   <header>
-    <h1>Eswar Kumar Kota, Harshitha Reddy Salguti</h1>
-    <h2>N01538388, N01537582</h2>
+    <img src="/cinema.jpg" alt="Mflix Movies Logo">
+    <h1>Mflix Movies</h1>
   </header>
 
   <main>
@@ -17,7 +68,8 @@
   </main>
 
   <footer>
-    <p>keswar466@gmail.com,harshithareddysalguti02@gmail.com</p>
+    <img src="/mail.jpg" alt="mflixmovies@toronto.com"> <!-- Replace 'path_to_your_mail_image.png' with your image path -->
+    <p>mflixmovies@toronto.com</p>
   </footer>
 </body>
 

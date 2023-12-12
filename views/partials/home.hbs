@@ -8,60 +8,175 @@
     <title>Home</title>
 
     <style>
-        .sam {
-            font-family: 'Arial', sans-serif;
-            background-color: #f7f7f7;
+        body {
             margin: 0;
             padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: #040404;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             flex-direction: column;
+            align-items: center;
+            color: #fff;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            color: #fff;
+            background: linear-gradient(to bottom right, #2F80ED, #56CCF2);
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 1;
+            animation: floating 3s ease infinite; /* Apply floating animation */
+        }
+
+        @keyframes floating {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px); /* Move text up */
+            }
+            100% {
+                transform: translateY(0);
+            }
         }
 
         h1 {
-            color: #333;
-            margin-bottom: 20px;
+            margin: 0;
+            font-size: 28px;
+            letter-spacing: 2px;
+        }
+
+        .main-content {
+            margin-top: 100px;
+            text-align: center;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .card {
+            width: 300px;
+            height: 400px;
+            perspective: 1000px;
+            margin: 20px;
+        }
+
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .card:hover .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front,
+        .card-back {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             text-align: center;
         }
 
-        ul {
+        .card-front {
+            background-color: #fff;
+            z-index: 2;
+        }
+
+        .card-back {
+            background-color: #2F80ED;
+            transform: rotateY(180deg);
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-content ul {
             list-style: none;
             padding: 0;
             display: flex;
-            gap: 20px;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        li {
-            margin: 10px;
-        }
-
-        a {
+        .card-content li a {
             text-decoration: none;
             color: #fff;
-            background-color: #4CAF50;
-            padding: 10px 20px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-        a:hover {
-            background-color: #45a049;
+            font-size: 18px;
         }
     </style>
 </head>
 
 <body>
-    <div class="sam">
-        <h1>Welcome to the Final Project </h1>
-        <ul>
-            <li><a href="/api/movies/search">View Movies</a></li>
-            <li><a href="/api/movies/new">Add New Movies</a></li>
-            <li><a href="/api/movies/searchMovie">Search Movies</a></li>
+   
 
-        </ul>
+    <div class="main-content">
+        <div class="card">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="/image1.jpg" alt="Image 1" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="card-back">
+                    <div class="card-content">
+                        <h2>List 1</h2>
+                        <ul>
+                            <li><a href="/api/movies/search">View Movies</a></li>
+                            <!-- Additional list items -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="/image2.jpg" alt="Image 2" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="card-back">
+                    <div class="card-content">
+                        <h2>List 2</h2>
+                        <ul>
+                            <li><a href="/api/movies/new">Add New Movies</a></li>
+                            <!-- Additional list items -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="/image3.jpg" alt="Image 3" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="card-back">
+                    <div class="card-content">
+                        <h2>List 3</h2>
+                        <ul>
+                            <li><a href="/api/movies/searchMovie">Search Movies</a></li>
+                            <!-- Additional list items -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    
 </body>
 
 </html>
