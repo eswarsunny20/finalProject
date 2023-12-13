@@ -29,7 +29,8 @@ const verifyToken = (req, res, next) => {
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = req.session.token; 
-    // const token = authHeader && authHeader.split(' ')[1]    
+    // const token = authHeader && authHeader.split(' ')[1]   
+    console.log(' Token:', token);
     if (!token) {
       return res.status(403).render("partials/error", {message: 'Please Login Before accessing any secure routes' });
     }
