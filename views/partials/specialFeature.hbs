@@ -133,7 +133,11 @@
         {{#each movies}}
             <div class="movie-card">
                 <h3>{{ this.title }}</h3>
-                <img src="{{ this.poster }}" alt="{{ this.title }}">
+                {{#if this.poster}}
+                    <img src="{{ this.poster }}" alt="{{ this.title }}">
+                {{else}}
+                    <img src="/image11.jpg" alt="Default Poster">
+                {{/if}}
                 <div class="movie-details">
                     <div class="stars-and-rating">
                         <div class="stars">
