@@ -75,6 +75,10 @@ app.use(
     secret: secureSecretKey,
     resave: false,
     saveUninitialized: true,
+    cookie: {
+      secure: false, // true for https
+      maxAge: 3600000, // Session expiration time in milliseconds (now 1 hr)
+    },
   })
 );
 
@@ -89,10 +93,14 @@ initialize(database.url)
     app.post("/api/login", (req, res) => {
       //  no auth and no key as it's the login
       const { username, password } = req.body;
-      console.log(password);
       if (username === "eswar" && password === "sunny") {
         const token = jwt.sign({ username }, secureSecretKey, {
           expiresIn: "1h",
+        });
+        res.cookie("authToken", token, {
+          httpOnly: true,
+          secure: false, 
+          maxAge: 3600000, 
         });
         req.session.token = token;
         res.render("partials/home"); // Redirect to the home page
