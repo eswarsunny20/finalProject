@@ -43,7 +43,7 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: false, // true for https
+      secure: true, // true for https
       maxAge: 3600000, // Session expiration time in milliseconds (now 1 hr)
     },
   })
