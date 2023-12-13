@@ -97,11 +97,11 @@ initialize(database.url)
         const token = jwt.sign({ username }, secureSecretKey, {
           expiresIn: "1h",
         });
-        res.cookie("authToken", token, {
-          httpOnly: true,
-          secure: false, 
-          maxAge: 3600000, 
-        });
+        // res.cookie("authToken", token, {
+        //   httpOnly: true,
+        //   secure: false, 
+        //   maxAge: 3600000, 
+        // });
         req.session.token = token;
         res.render("partials/home"); // Redirect to the home page
       } else {
