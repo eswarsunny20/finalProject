@@ -37,6 +37,17 @@ const key = generateKey();
 // only when performing put and delete
 // console.log('API-Key : - ',key)
 
+app.use(
+  session({
+    secret: secureSecretKey,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: false, // true for https
+      maxAge: 3600000, // Session expiration time in milliseconds (now 1 hr)
+    },
+  })
+);
 
 // Create an HTTPS server
 const httpsServer = https.createServer(credentials, app);
@@ -70,17 +81,7 @@ app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 
 const db = require("./models/movies");
 
-app.use(
-  session({
-    secret: secureSecretKey,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      secure: false, // true for https
-      maxAge: 3600000, // Session expiration time in milliseconds (now 1 hr)
-    },
-  })
-);
+
 
 initialize(database.url)
   .then(() => {
