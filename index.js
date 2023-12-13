@@ -117,7 +117,7 @@ initialize(database.url)
       });
     });
 
-    app.get("/api/movies/new", authenticateToken, (req, res) => {
+    app.get("/api/movies/new", authenticateToken, async (req, res) => {
       res.render("partials/newMovie");
     });
 
