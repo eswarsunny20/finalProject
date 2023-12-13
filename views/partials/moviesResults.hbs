@@ -4,22 +4,133 @@
 <head>
     <title>Movies Results</title>
     <style>
-        /* Your existing styles here */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Hide horizontal scrollbar */
+        }
+
+        /* Background image div */
+        .background-image {
+            background-image: url('/image7.jpg'); /* Replace 'your-image-url.jpg' with the URL/path of your image */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200%; /* Double the width for scrolling effect */
+            height: 100%;
+            animation: moveBackground 60s linear infinite; /* Change the duration as needed */
+            z-index: -1; /* Set a negative z-index to place it behind other elements */
+        }
+
+        /* Background movement animation */
+        @keyframes moveBackground {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        header {
+            text-align: center;
+            padding: 10px 0;
+            color: #fff;
+            background: linear-gradient(to bottom right, #2F80ED, #5b92a4);
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 3;
+          animation: floating 3s ease infinite; /* Apply floating animation */
+        }
+
+        @keyframes floating {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px); /* Move text up */
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        .form-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+            z-index: 2; /* Ensure form container is above the background */
+            position: relative;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="submit"] {
+            padding: 10px;
+            margin-bottom: 15px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        input[type="submit"] {
+            background-color: #3ab1c8;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #719192;
+        }
+
+        input[type="text"]:focus,
+        input[type="submit"]:focus {
+            outline: none;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+        }
+
+        hr {
+            display: none; /* Hide horizontal line */
+        }
     </style>
 </head>
 
 <body>
-    <h1>Movies Results</h1>
+    <div class="background-image"></div>
 
-    <!-- Form to search by title -->
-    <form action="/api/movies/details" method="GET">
-    <label for="id">Please enter ID:</label>
-    <input type="text" id="id" name="id" value="{{id}}">
-    <input type="submit" value="Search">
-</form>
-
-
-    <hr>
+   
+    <div class="form-container">
+        <form action="/api/movies/details" method="GET">
+            <label for="id">Search for Movies:</label>
+            <input type="text" id="id" name="id" value="" placeholder="Enter movie title or ID" required>
+            <input type="submit" value="Search">
+        </form>
+    </div>
 </body>
 
 </html>

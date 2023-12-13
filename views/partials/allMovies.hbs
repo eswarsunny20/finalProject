@@ -6,25 +6,59 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+header {
+            text-align: center;
+            padding: 10px 0;
+            color: #fff;
+            background: linear-gradient(to bottom right, #2F80ED, #56CCF2);
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 3;
+            animation: floating 3s ease infinite; /* Apply floating animation */
         }
 
+        @keyframes floating {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px); /* Move text up */
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
         h1 {
             text-align: center;
+            margin-top: 30px;
+            color: #333;
         }
 
         h3 {
             text-align: center;
             color: #4CAF50;
+            margin-bottom: 10px;
         }
 
         form {
             text-align: center;
+            margin-bottom: 30px;
         }
 
         .card-container {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-around;
+            align-items: flex-start;
+            margin: 0 auto;
+            max-width: 1200px;
         }
 
         .card {
@@ -33,27 +67,44 @@
             border: 1px solid #ccc;
             border-radius: 8px;
             overflow: hidden;
+            background-color: #fff;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Added box shadow */
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
         }
 
         .card-img-container {
             width: 100%;
             height: 200px;
-            background: linear-gradient(to right, #4CAF50 50%, #ddd 50%);
-            overflow: hidden;
+            position: relative;
         }
 
         .card img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover img {
+            transform: scale(1.1);
         }
 
         .card-content {
-            padding: 15px;
+            padding: 20px;
         }
 
         p {
-            margin: 0;
+            margin: 5px 0;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 10px 0;
         }
     </style>
     <script>
@@ -71,7 +122,6 @@
                         <div class="card-img-container">
                             <img src="{{this.poster}}" onerror="this.src='/humber-logo.jpg';" alt="{{this.title}} Image">
                         </div>
-                        <hr>
                         <div class="card-content">
                             <h3>{{this.title}}</h3>
                             <hr>

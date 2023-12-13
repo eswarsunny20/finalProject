@@ -4,31 +4,94 @@
 <head>
     <title>Movie Details - {{title}}</title>
     <style>
-        .page {
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
             display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            padding: 10px 0;
+            color: #fff;
+            background: linear-gradient(to bottom right, #2F80ED, #5b92a4);
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 4;
+            animation: floating 3s ease infinite; /* Apply floating animation */
+        }
+
+        @keyframes floating {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px); /* Move text up */
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            text-align: center;
+            margin: 20px 0; /* Adjust margin as needed */
+            font-size: 24px;
+            color: #2F80ED; /* Change text color */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Add shadow to text */
+        }
+
+        .page {
+            width: 100%;
+            max-width: 800px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 60px; /* Adjust as needed */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            gap: 20px;
+            transition: transform 0.3s ease; /* Add transition effect */
+        }
+
+        .page:hover {
+            transform: translateY(-5px); /* Apply hover effect */
         }
 
         img {
             max-width: 300px;
             height: auto;
-            margin-left: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .content {
-            margin-left: 200px;
+            max-width: 600px;
+            flex-grow: 1;
+        }
+
+        p {
+            margin-bottom: 10px;
+            color: #333; /* Change text color */
+        }
+
+        p strong {
+            color: #2F80ED; /* Change strong text color */
         }
     </style>
 </head>
 
 <body>
-
-    <form action="/api/movies/{{id}}" method="GET">
-    <label for="id">Please enter ID:</label>
-    <input type="text" id="id" name="id" value="{{id}}">
-    <input type="submit" value="Search">
-</form>
-
-    <h1>{{title}}</h1>
+    <h2>Title</h2>
 
     <div class="page">
         <img src="{{poster}}" alt="Movie Poster">
@@ -47,7 +110,6 @@
                 ({{tomatoes.critic.numReviews}} reviews)</p>
             <p><strong>Awards Wins:</strong> {{awards.wins}}</p>
             <p><strong>Full Plot:</strong> {{fullplot}}</p>
-
         </div>
     </div>
 </body>
